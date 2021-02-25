@@ -11,9 +11,11 @@ First, the MongoDB has to be initialized. The easiest way to do this is by using
 `cd master_thesis_backend`\
 `docker-compose up -d`\
 `pip install pymongo`\
-`python init_replicaset.py`\
+`python init_replicaset.py`
 
 This will start the database with all relevant settings.
+
+For testing, the google chrome browser was used. To make HTTP/2 work locally, the settings have be checked in chrome at: chrome://flags/#allow-insecure-localhost
 
 The backend has been run from a current version of eclipse (2020). To start the application, open eclipse and chose: \
 "File > Import... > Existing Maven Projects > Browse... > path/to/dir > Finish"

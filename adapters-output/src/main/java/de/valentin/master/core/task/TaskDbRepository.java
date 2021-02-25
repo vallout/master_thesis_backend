@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.valentin.master.core.appservices.repositories.TodoRepository;
+import de.valentin.master.core.appservices.repositories.TaskRepository;
 import de.valentin.master.core.shared_model.ProjectId;
 import de.valentin.master.core.shared_model.UserId;
 import de.valentin.master.core.task.TaskAggregate;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class TaskDbRepository implements TodoRepository{
+public class TaskDbRepository implements TaskRepository{
 	
 	private TaskDAO dao;
 	

@@ -51,7 +51,7 @@ public class AvatarRootEntity {
 	public Map<String, ItemId> getAvatarItems() {
 		return avatarItems;
 	}
-	public boolean putAvatarItem(String kind, ItemId avatarItem) {
+	public boolean equipItem(String kind, ItemId avatarItem) {
 		if (this.userItems.contains(avatarItem)) {
 			this.avatarItems.put(kind, avatarItem);
 			return true;
@@ -59,7 +59,7 @@ public class AvatarRootEntity {
 			return false;
 		}
 	}
-	public boolean removeAvatarItem(String kind) {
+	public boolean unequipItem(String kind) {
 		ItemId itemid = this.avatarItems.remove(kind);
 		if (itemid == null) return false;
 		return true;

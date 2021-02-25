@@ -96,7 +96,7 @@ public class GamingApplicationService {
 		}
 	}
 	
-	public List<GroupChallengeData> getAllGroupEvents() {
+	public List<GroupChallengeData> getAllGroupChallenges() {
 		List<GroupChallengeAggregate> groupEvents = groupEventRepository.retrieve();
 		return dtoMapper.convertGroupEventAggregatesToGroupEventDtos(groupEvents);
 	}
@@ -244,7 +244,7 @@ public class GamingApplicationService {
 	public boolean equipItem(String userId, String itemId) {
 		AvatarAggregate avatarAggregate = avatarRepository.retrieve(new UserId(userId));
 		ItemAggregate itemAggregate = itemRepository.retrieve(itemId);
-		boolean check = avatarAggregate.getRootEntity().putAvatarItem(
+		boolean check = avatarAggregate.getRootEntity().equipItem(
 				itemAggregate.getRootEntity().getItemType().toString(), 
 				new ItemId(itemId)
 		);
@@ -264,7 +264,7 @@ public class GamingApplicationService {
 	
 	public boolean unequipItem(String userId, String kind) {
 		AvatarAggregate avatarAggregate = avatarRepository.retrieve(new UserId(userId));
-		boolean check = avatarAggregate.getRootEntity().removeAvatarItem(kind);
+		boolean check = avatarAggregate.getRootEntity().unequipItem(kind);
 		if(!check) return false;
 		try {
 			avatarRepository.save(avatarAggregate);

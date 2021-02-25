@@ -6,7 +6,7 @@ import de.valentin.master.core.shared_model.ProjectId;
 import de.valentin.master.core.shared_model.UserId;
 import de.valentin.master.core.task.TaskAggregate;
 
-public interface TodoRepository {
+public interface TaskRepository {
 	
 	void save(TaskAggregate todoAggregate);
 	

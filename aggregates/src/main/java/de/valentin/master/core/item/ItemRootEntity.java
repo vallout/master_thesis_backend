@@ -45,7 +45,7 @@ public class ItemRootEntity {
 		return price;
 	}
 	
-	public boolean isSellable() {
+	public boolean isBuyable() {
 		if (price > 0) {
 			return true;
 		} else {

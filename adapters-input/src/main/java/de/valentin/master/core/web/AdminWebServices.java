@@ -2,6 +2,7 @@ package de.valentin.master.core.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ import de.valentin.master.core.shared_model.ItemId;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
-public class RuleWebServices {
+public class AdminWebServices {
 	
 	EventApplicationService eventApplicationService;
 	GamingApplicationService gamingApplicationService;
 	
 	@Autowired
-	public RuleWebServices(EventApplicationService eventApplicationService, GamingApplicationService gamingApplicationService) {
+	public AdminWebServices(EventApplicationService eventApplicationService, GamingApplicationService gamingApplicationService) {
 		this.eventApplicationService = eventApplicationService;
 		this.gamingApplicationService = gamingApplicationService;
 	}
@@ -75,19 +76,7 @@ public class RuleWebServices {
 	
 	@GetMapping("/groupChallenge/get/all")
 	public ResponseEntity<List<GroupChallengeData>> getGroupChallenges() {
-		List<GroupChallengeData> output =  gamingApplicationService.getAllGroupEvents();
-		return ResponseEntity.ok(output);
-	}
-	
-	@GetMapping("/groupChallenge/get/active")
-	public ResponseEntity<List<GroupChallengeData>> getActiveGroupChallenges() {
-		List<GroupChallengeData> output =  gamingApplicationService.getActiveGroupChallenges();
-		return ResponseEntity.ok(output);
-	}
-	
-	@GetMapping("/groupChallenge/get/all/running")
-	public ResponseEntity<List<GroupChallengeData>> getRunningGroupChallenges() {
-		List<GroupChallengeData> output = gamingApplicationService.getAllRunningGroupEvents();
+		List<GroupChallengeData> output =  gamingApplicationService.getAllGroupChallenges();
 		return ResponseEntity.ok(output);
 	}
 	
@@ -125,6 +114,18 @@ public class RuleWebServices {
 	public ResponseEntity<ItemData> getItemBy(@PathVariable String itemId) {
 		ItemData item = gamingApplicationService.getItemBy(itemId);
 		return ResponseEntity.ok(item);
+	}
+	
+	@GetMapping("/statistics/get/all")
+	public ResponseEntity<Map<String, Object>> showStatisticsForAll() {
+		Map<String, Object> statistics = gamingApplicationService.getStatistics();
+		return ResponseEntity.ok(statistics);
+	}
+	
+	@GetMapping("/statistics/get/gamified")
+	public ResponseEntity<Map<String, Map<Integer, Integer>>> showGamifiedStatistics() {
+		Map<String, Map<Integer, Integer>> statistics = gamingApplicationService.getGamificationStatistics();
+		return ResponseEntity.ok(statistics);
 	}
 	
 	@GetMapping("/userChallenge/get/QueryKeywords/userLoggedIn")

@@ -21,61 +21,61 @@ import de.valentin.master.core.shared_model.UserId;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
-public class TodoWebServices {
+public class TaskWebServices {
 	
 	TaskApplicationService applicationService;
 	
 	@Autowired
-	public TodoWebServices(TaskApplicationService applicationService) {
+	public TaskWebServices(TaskApplicationService applicationService) {
 		this.applicationService = applicationService;
 	}
 	
 	@GetMapping("/tasks/of/project/{projectId}")
-	public ResponseEntity<List<TaskData>> showAllTodosInProject(@PathVariable String projectId) {
-		List<TaskData> output = applicationService.getTodosBy(new ProjectId(projectId));
+	public ResponseEntity<List<TaskData>> showAllTasksInProject(@PathVariable String projectId) {
+		List<TaskData> output = applicationService.getTasksBy(new ProjectId(projectId));
 		return ResponseEntity.ok(output);
 	}
 	
 	@GetMapping("/tasks/of/user/{userId}") 
-	public ResponseEntity<List<TaskData>> showAllTodosOfUser(@PathVariable String userId) {
-		List<TaskData> output = applicationService.getTodosBy(new UserId(userId));
+	public ResponseEntity<List<TaskData>> showAllTasksOfUser(@PathVariable String userId) {
+		List<TaskData> output = applicationService.getTasksBy(new UserId(userId));
 		return ResponseEntity.ok(output);
 	}
 	
 	@PutMapping("/task/create/from/{userId}/in/{projectId}")
-	public ResponseEntity<TaskData> createTodo(@PathVariable String userId, @PathVariable String projectId, @RequestBody TaskData todoData) {
-		TaskData task = applicationService.createTodo(userId, projectId, todoData);
+	public ResponseEntity<TaskData> createTask(@PathVariable String userId, @PathVariable String projectId, @RequestBody TaskData taskData) {
+		TaskData task = applicationService.createTask(userId, projectId, taskData);
 		return ResponseEntity.ok(task);
 	}
 	
-	@PostMapping("/task/update/{todoId}")
-	public ResponseEntity<TaskData> updateTodo(@RequestBody TaskData todoData, @PathVariable String todoId) {
-		TaskData output = applicationService.changeTodo(todoId, todoData);
+	@PostMapping("/task/update/{taskId}")
+	public ResponseEntity<TaskData> changeTask(@RequestBody TaskData taskData, @PathVariable String taskId) {
+		TaskData output = applicationService.changeTask(taskId, taskData);
 		return ResponseEntity.ok(output);
 	}
 	
-	@PostMapping("/task/like/{todoId}/liker/{userId}")
-	public ResponseEntity<?> likeTodo(@PathVariable String todoId, @PathVariable String userId) {
-		applicationService.likeTodo(todoId, userId);
+	@PostMapping("/task/like/{taskId}/liker/{userId}")
+	public ResponseEntity<?> likeTask(@PathVariable String taskId, @PathVariable String userId) {
+		applicationService.likeTask(taskId, userId);
 		return ResponseEntity.ok().build();
 	}
 	
-	@PostMapping("/task/unlike/{todoId}/disliker/{userId}")
-	public ResponseEntity<?> unlikeTodo(@PathVariable String todoId, @PathVariable String userId) {
-		applicationService.unlikeTodo(todoId, userId);
+	@PostMapping("/task/unlike/{taskId}/disliker/{userId}")
+	public ResponseEntity<?> unlikeTask(@PathVariable String taskId, @PathVariable String userId) {
+		applicationService.unlikeTask(taskId, userId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body("user " + userId + " unliked todo " + todoId + ".");
+				.body("user " + userId + " unliked todo " + taskId + ".");
 	}
 	
-	@DeleteMapping("/task/delete/{todoId}")
-	public ResponseEntity<String> deleteTodo(@PathVariable String todoId) {
-		applicationService.deleteTodo(todoId);
+	@DeleteMapping("/task/delete/{taskId}")
+	public ResponseEntity<String> deleteTask(@PathVariable String taskId) {
+		applicationService.deleteTask(taskId);
 		return ResponseEntity.ok().build();
 	}
 	
 	@GetMapping("/task/get/{todoId}")
-	public ResponseEntity<TaskData> getTodoBy(@PathVariable String todoId) {
-		TaskData output = applicationService.getTodoBy(todoId);
+	public ResponseEntity<TaskData> getTaskBy(@PathVariable String taskId) {
+		TaskData output = applicationService.getTaskBy(taskId);
 		return ResponseEntity.ok(output);
 	}
 }

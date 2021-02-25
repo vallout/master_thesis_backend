@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.valentin.master.core.appservices.GamingApplicationService;
 import de.valentin.master.core.appservices.dto.AvatarData;
+import de.valentin.master.core.appservices.dto.GroupChallengeData;
 import de.valentin.master.core.appservices.dto.ItemData;
 import de.valentin.master.core.shared_model.UserId;
 
@@ -48,7 +49,7 @@ public class GamifiedWebServices {
 	}
 	
 	@PostMapping("/avatar/buy/{itemId}/as/{userId}")
-	public ResponseEntity<Boolean> buyItemForAvatar(@PathVariable String itemId, @PathVariable String userId) {
+	public ResponseEntity<Boolean> buyItem(@PathVariable String itemId, @PathVariable String userId) {
 		boolean output = applicationService.buyItem(userId, itemId);
 		return ResponseEntity.ok(output);
 	}
@@ -112,15 +113,9 @@ public class GamifiedWebServices {
 		return ResponseEntity.ok(statistics);
 	}
 	
-	@GetMapping("/statistics/get/all")
-	public ResponseEntity<Map<String, Object>> showStatisticsForAll() {
-		Map<String, Object> statistics = applicationService.getStatistics();
-		return ResponseEntity.ok(statistics);
-	}
-	
-	@GetMapping("/statistics/get/gamified")
-	public ResponseEntity<Map<String, Map<Integer, Integer>>> showGamifiedStatistics() {
-		Map<String, Map<Integer, Integer>> statistics = applicationService.getGamificationStatistics();
-		return ResponseEntity.ok(statistics);
+	@GetMapping("/groupChallenge/get/active")
+	public ResponseEntity<List<GroupChallengeData>> getActiveGroupChallenges() {
+		List<GroupChallengeData> output =  applicationService.getActiveGroupChallenges();
+		return ResponseEntity.ok(output);
 	}
 }

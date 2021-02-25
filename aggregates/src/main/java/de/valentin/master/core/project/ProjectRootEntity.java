@@ -41,4 +41,8 @@ public class ProjectRootEntity {
 	public void addMember(UserId userId) {
 		this.members.add(userId);
 	}
+	
+	public void removeMember(UserId userId) {
+		this.members.remove(userId);
+	}
 }

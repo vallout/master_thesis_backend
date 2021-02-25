@@ -12,7 +12,7 @@ import de.valentin.master.core.appservices.internalevents.TaskCreated;
 import de.valentin.master.core.appservices.internalevents.TaskFinished;
 import de.valentin.master.core.appservices.internalevents.TaskLiked;
 import de.valentin.master.core.appservices.mapservices.DtoMapper;
-import de.valentin.master.core.appservices.repositories.TodoRepository;
+import de.valentin.master.core.appservices.repositories.TaskRepository;
 import de.valentin.master.core.shared_model.ProjectId;
 import de.valentin.master.core.shared_model.UserId;
 import de.valentin.master.core.task.TaskAggregate;
@@ -20,41 +20,41 @@ import de.valentin.master.core.task.TaskAggregate;
 @Service
 public class TaskApplicationService {
 	
-	private TodoRepository todoRepository;
+	private TaskRepository taskRepository;
 	
 	private DtoMapper dtoMapper;
 	
 	private ApplicationEventPublisher applicationEventPublisher;
 	
 	@Autowired
-	public TaskApplicationService(TodoRepository todoRepository,
+	public TaskApplicationService(TaskRepository taskRepository,
 									ApplicationEventPublisher applicationEventPublisher,
 									DtoMapper dtoMapper) {
-		this.todoRepository = todoRepository;
+		this.taskRepository = taskRepository;
 		
 		this.dtoMapper = dtoMapper;
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 	
-	public TaskData getTodoBy(String todoId) {
-		TaskAggregate aggregate = todoRepository.retrieve(todoId);
+	public TaskData getTaskBy(String todoId) {
+		TaskAggregate aggregate = taskRepository.retrieve(todoId);
 		return dtoMapper.convertTodoAggregateToTodoDto(aggregate);
 	}
 	
-	public List<TaskData> getTodosBy(UserId userId) {
+	public List<TaskData> getTasksBy(UserId userId) {
 
-		List<TaskAggregate> aggregates = todoRepository.retrieve(userId);
+		List<TaskAggregate> aggregates = taskRepository.retrieve(userId);
 		List<TaskData> dtos = dtoMapper.convertTodoAggregatesToTodoDtos(aggregates);
 		return dtos;
 	}
 	
-	public List<TaskData> getTodosBy(ProjectId projectId) {
-		List<TaskAggregate> aggregates = todoRepository.retrieve(projectId);
+	public List<TaskData> getTasksBy(ProjectId projectId) {
+		List<TaskAggregate> aggregates = taskRepository.retrieve(projectId);
 		List<TaskData> dtos = dtoMapper.convertTodoAggregatesToTodoDtos(aggregates);
 		return dtos;
 	}
 	
-	public TaskData createTodo(String userId, String projectId, TaskData todoData) {
+	public TaskData createTask(String userId, String projectId, TaskData todoData) {
 		if (checkTaskRestriction(new UserId(userId), 3)) {
 			return null;
 		}
@@ -73,7 +73,7 @@ public class TaskApplicationService {
 		return taskOut;
 	}
 	
-	public TaskData changeTodo(String todoId, TaskData todoData) {
+	public TaskData changeTask(String todoId, TaskData todoData) {
 		try {
 			return setTodo(todoId, todoData);
 		} catch(Throwable t) {
@@ -82,27 +82,27 @@ public class TaskApplicationService {
 		}
 	}
 	
-	public void likeTodo(String todoId, String liker) {
-		TaskAggregate todo = todoRepository.retrieve(todoId);
+	public void likeTask(String todoId, String liker) {
+		TaskAggregate todo = taskRepository.retrieve(todoId);
 		todo.getRootEntity().addLiker(new UserId(liker));
 		UserId creator = todo.getRootEntity().getCreator();
-		todoRepository.save(todo);
+		taskRepository.save(todo);
 		ProjectId projectId = todo.getRootEntity().getProjectId();
 		applicationEventPublisher.publishEvent(new TaskLiked(this, creator, new UserId(liker), projectId));
 	}
 	
-	public void unlikeTodo(String todoId, String liker) {
-		TaskAggregate todo = todoRepository.retrieve(todoId);
+	public void unlikeTask(String todoId, String liker) {
+		TaskAggregate todo = taskRepository.retrieve(todoId);
 		todo.getRootEntity().removeLiker(new UserId(liker));
-		todoRepository.save(todo);
+		taskRepository.save(todo);
 	}
 	
-	public boolean deleteTodo(String todoId) {
-		return todoRepository.delete(todoId);
+	public boolean deleteTask(String todoId) {
+		return taskRepository.delete(todoId);
 	}
 	
 	private TaskData setTodo(String todoId, TaskData todoData) {
-		TaskAggregate oldTodo = todoRepository.retrieve(todoId);
+		TaskAggregate oldTodo = taskRepository.retrieve(todoId);
 		todoData.setTaskId(todoId);
 		if (oldTodo != null) {
 			for (UserId liker : oldTodo.getRootEntity().getLikers()) {
@@ -112,7 +112,7 @@ public class TaskApplicationService {
 			todoData.setUserId(oldTodo.getRootEntity().getCreator().toString());
 		}
 		TaskAggregate todo = dtoMapper.convertTodoDtoToTodoAggregate(todoData);
-		todoRepository.save(todo);
+		taskRepository.save(todo);
 		
 		if (oldTodo != null && oldTodo.getRootEntity().getState().toString() != "FINISHED"
 				&& todoData.getState().equals("FINISHED")) {
@@ -124,7 +124,7 @@ public class TaskApplicationService {
 	}
 	
 	private boolean checkTaskRestriction(UserId userId, int restriction) {
-		List<TaskAggregate> todos = todoRepository.retrieve(userId);
+		List<TaskAggregate> todos = taskRepository.retrieve(userId);
 		return todos.size() > restriction;
 	}
 }
